@@ -41,6 +41,7 @@ categories: jekyll update
             return false;
     }
     return true;  
+
 思路是利用数组创建字典，存储的值作为字符出现次数，很简单，不多提。  
 
 ### 876.链表的中间结点  
@@ -61,6 +62,7 @@ categories: jekyll update
         }
         return head;
     }  
+
 本质上是快慢指针的方法，快指针(head)走两步慢指针(head)走一步。  
 
 <a name="the412"></a>
@@ -83,6 +85,7 @@ categories: jekyll update
         }
     }
     return ans;  
+    
 1. 一个简单的toString方法 `temp=i+""`  
 2. List、ArrayList 等方法不很熟练，贴个文档复习 [ArrayList](https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/ArrayList.html)  
 
@@ -128,8 +131,10 @@ categories: jekyll update
         }
         return Max;
     }
+
 很简单的二维数组题。accountsSize是行数，colSize是列数。  
 <a name="the1"></a>
+
 ### 1.两数之和
 > 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target  的那 两个 整数，并返回它们的数组下标。  
 > 你可以假设每种输入只会对应一个答案，并且你不能使用两次相同的元素。  
@@ -152,6 +157,7 @@ categories: jekyll update
     }
     *returnSize=0;
     return NULL;
+
 很简单的暴力查找 没什么好说的 注意题目要求返回数组即可  
 
 解法二
@@ -268,7 +274,9 @@ categories: jekyll update
         }
         return head;
     }
+
 思路和具体实现都不算很难，用作复习链表
+
 <a name="the3"></a>
 
 ### 3.无重复字符的最长字串
@@ -288,6 +296,7 @@ categories: jekyll update
         ans=ans>right-left+1?ans:right-left+1;
     }
     return ans;
+
 [滑动窗口算法](https://www.bilibili.com/video/BV1hd4y1r7Gq/?vd_source=0437aa3fbc324cf2cc3e7f8ca395e67c)  
 
 具体步骤如下：  
@@ -441,6 +450,7 @@ minX 和 minY 分别是 nums1 和 nums2 分割位置右侧的最小值。
 
         return 0;
     }
+
 很简单的暴力枚举，没什么好说的。边界条件也可以再优化一下到 `1000/6`   
 
 <button onclick="topFunction()" id="topBtn" title="Go to top">Top</button>
