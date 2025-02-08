@@ -85,7 +85,7 @@ categories: jekyll update
         }
     }
     return ans;  
-    
+
 1. 一个简单的toString方法 `temp=i+""`  
 2. List、ArrayList 等方法不很熟练，贴个文档复习 [ArrayList](https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/ArrayList.html)  
 
@@ -228,6 +228,7 @@ categories: jekyll update
     i = 0，nums[0] = 2，查找哈希表中是否存在 9 - 2 = 7，未找到，插入 (2, 0)。
     i = 1，nums[1] = 7，查找哈希表中是否存在 9 - 7 = 2，找到，返回 [0, 1]。
     最终返回 [0, 1]，表示数组中下标为 0 和 1 的两个数 2 和 7 的和为 9。
+
 [关于uthash.h](https://zhuanlan.zhihu.com/p/340692819)  
 **关于哈希表部分学艺不精，故将代码和详解都详细的贴了出来供复习**
 <a name="the2"></a>
