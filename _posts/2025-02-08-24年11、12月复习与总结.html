@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>LeetCode</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <hr>
+<h2 id="layout-posttitle-24年1112月复习与总结date--2025-02-08-220500-0800categories-jekyll-update">layout: post
+title: &quot;24年11、12月复习与总结&quot;
+date:  2025-02-08 22:05:00 +0800
+categories: jekyll update</h2>
+<h2 id="leetcode">LeetCode</h2>
+<h3 id="383赎金信">383.赎金信</h3>
+<blockquote>
+<p>给你两个字符串<em>ransomNote</em>和<em>magazine</em>，判断<em>ransomNote</em>能不能由<em>magazine</em>里面的字符构成。如果可以，返回 <em>true</em> ；否则返回<em>false</em>。<em>magazine</em>中的每个字符只能在 ransomNote 中使用一次。<br>
+int r = strlen(ransomNote);
+int m = strlen(magazine);
+if (m &lt; r)
+return false;
+int chart[26] = {0};
+for (int i = 0; i &lt; m; i++)
+{
+chart[magazine[i] - 'a']++;
+}
+for (int i = 0; i &lt; r; i++)
+{
+chart[ransomNote[i] - 'a']--;
+}
+for (int i = 0; i &lt; 26; i++)
+{
+if (chart[i] &lt; 0)
+return false;
+}
+return true;<br>
+思路是利用数组创建字典，存储的值作为字符出现次数，很简单，不多提。</p>
+</blockquote>
+<h3 id="876链表的中间结点">876.链表的中间结点</h3>
+<blockquote>
+<p>给你单链表的头结点 head ，请你找出并返回链表的中间结点。如果有两个中间结点，则返回第二个中间结点。<br>
+struct ListNode {
+int val;
+struct ListNode <em>next;
+};
+typedef struct ListNode ListNode;
+struct ListNode</em> middleNode(struct ListNode* head) {
+int depth=0;ListNode* temp=head;
+while(temp!=NULL)
+{
+temp=temp-&gt;next;
+depth++;
+if(depth%2==0&amp;&amp;head!=NULL)head=head-&gt;next;
+}
+return head;
+}<br>
+本质上是快慢指针的方法，快指针(head)走两步慢指针(head)走一步。</p>
+</blockquote>
+<h3 id="412fizz-buzz">412.Fizz Buzz</h3>
+<blockquote>
+<p>给你一个整数 n ，找出从 1 到 n 各个整数的 Fizz Buzz 表示，并用字符串数组 answer（下标从 1 开始）返回结果，其中：answer[i] == &quot;FizzBuzz&quot; 如果 i 同时是 3 和 5 的倍数。answer[i] == &quot;Fizz&quot; 如果 i 是 3 的倍数。answer[i] == &quot;Buzz&quot; 如果 i 是 5 的倍数。answer[i] == i （以字符串形式）如果上述条件全不满足。<br>
+List<String> ans=new ArrayList();
+for(int i=1;i&lt;=n;i++){
+if(i%15==0){
+ans.add(&quot;FizzBuzz&quot;);
+}else if(i%3==0){
+ans.add(&quot;Fizz&quot;);
+}else if(i%5==0){
+ans.add(&quot;Buzz&quot;);
+}
+else{
+String temp=i+&quot;&quot;;
+ans.add(temp);
+}
+}
+return ans;</p>
+</blockquote>
+<ol>
+<li>一个简单的toString方法 <code>temp=i+&quot;&quot;</code></li>
+<li>List、ArrayList 等方法不很熟练，贴个文档复习 <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/ArrayList.html">ArrayList</a></li>
+</ol>
+<h3 id="1342数字变成0所需的次数">1342.数字变成0所需的次数</h3>
+<p>本题过于简单故不多做赘述，后来使用了dp方法重解了该题</p>
+<h3 id="1480一维数组的动态和">1480.一维数组的动态和</h3>
+<blockquote>
+<p>给你一个数组 nums 。数组「动态和」的计算公式为：runningSum[i] = sum(nums[0]…nums[i]) 。请返回 nums 的动态和。
+示例 1：
+输入：nums = [1,2,3,4]
+输出：[1,3,6,10]
+解释：动态和计算过程为 [1, 1+2, 1+2+3, 1+2+3+4]
+int* runningSum(int* nums, int numsSize, int* returnSize) {
+*returnSize=numsSize;
+for(int i=1;i&lt;numsSize;i++)
+{
+nums[i]+=nums[i-1];
+}</p>
+</blockquote>
+<pre><code>    return nums;
+}
+</code></pre>
+
+            
+            
+        </body>
+        </html>
