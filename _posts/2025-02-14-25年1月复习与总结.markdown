@@ -1,0 +1,176 @@
+---
+layout: post
+title: "24年1月复习与总结"
+date:  2025-02-14 22:05:00 +0800
+categories: jekyll update
+---  
+
+## LeetCode 
+
+***
+### 爬楼梯
+### 斐波那契数
+### 第N个泰伯那契数
+三个最简单的斐波那契类型DP，不多说。
+***
+### 最小花费爬楼梯
+>给你一个整数数组 cost ，其中 cost[i] 是从楼梯第 i 个台阶向上爬需要支付的费用。一旦你支付此费用，即可选择向上爬一个或者两个台阶。  
+你可以选择从下标为 0 或下标为 1 的台阶开始爬楼梯。  
+请你计算并返回达到楼梯顶部的最低花费。  
+
+    int dp[costSize + 1];
+        dp[0] = 0;
+        dp[1] = 0;
+
+        for (int i = 2; i <= costSize; i++) {
+            dp[i] = (dp[i - 1] + cost[i - 1] < dp[i - 2] + cost[i - 2]) ? dp[i - 1] + cost[i - 1] : dp[i - 2] + cost[i - 2];
+        }
+
+        return dp[costSize];
+
+简单的状态转换dp，不多说。不必多费心思。
+
+### 打家劫舍
+>你是一个专业的小偷，计划偷窃沿街的房屋。每间房内都藏有一定的现金，影响你偷窃的唯一制约因素就是相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警。  
+给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。  
+
+    int *dp = (int *)malloc(sizeof(int) * numsSize);
+        dp[0] = nums[0];
+        dp[1] = nums[0] > nums[1] ? nums[0] : nums[1];
+        for (int i = 2; i < numsSize; i++) {
+            dp[i] = dp[i - 1] > dp[i - 2] + nums[i] ? dp[i - 1] : dp[i - 2] + nums[i];
+        }
+        return dp[numsSize - 1];
+
+### 删除并获得点数 
+>给你一个整数数组 nums ，你可以对它进行一些操作。  
+每次操作中，选择任意一个 nums[i] ，删除它并获得 nums[i] 的点数。之后，你必须删除 所有 等于 nums[i] - 1 和 nums[i] + 1 的元素。  
+开始你拥有 0 个点数。返回你能通过这些操作获得的最大点数。
+
+    if(numsSize==0) return 0;
+    if(numsSize==1) return nums[0];
+
+    int max=0;
+    for(int i=0;i<numsSize;i++){
+        if(nums[i]>max) max=nums[i];
+    }
+    int *dp=(int *)malloc(sizeof(int)*(max+1));
+    memset(dp,0,sizeof(int)*(max+1));
+    for(int i=0;i<numsSize;i++){
+        dp[nums[i]]+=nums[i];
+    }
+    int *dp2=(int *)malloc(sizeof(int)*(max+1));
+    dp2[0]=0;
+    dp2[1]=dp[1];
+    for(int i=2;i<=max;i++){
+        dp2[i]=dp2[i-1]>dp2[i-2]+dp[i]?dp2[i-1]:dp2[i-2]+dp[i];
+    }
+    return dp2[max];
+
+实践发现不能简单的把数组排序后当成打家劫舍处理  
+因为对于[3，1]这种数组吧，数组元素并不连续；但是排完序之后 数组元素就在内存空间中物理相邻连续了  
+按打家劫舍处理就会导致打劫不连续  
+按正确的方法应当把数组元素的值当成下标，然后对应的值当成打家劫舍的值  
+也就是在中间插入0将其转换为打家劫舍问题  
+就是说 数组中元素的值其实是房屋的编号，房屋的价值则由求和确定  
+
+相邻值≈相邻房屋->触发警报  
+
+### 不同路径
+>一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。  
+机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。  
+问总共有多少条不同的路径？
+
+    int dp[m][n];    memset(dp,0,sizeof(dp));
+    for(int i=0;i<m;i++){
+        for(int j=0;j<n;j++){
+            if(i==0 || j==0) dp[i][j] = 1;
+            else
+            dp[i][j] = dp[i-1][j] + dp[i][j-1];
+        }
+    }
+    return dp[m-1][n-1];
+
+状态转移思路：机器人到达某格子，可能是从左边格移过来，也可能是从上边格移过来，到[i，j]的路径数就是到[i-1,j]路径数+[i，j-1]的路径数  
+初始化：边界路径单一（直着下或直着右）
+
+### 最小路径和
+>给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。  
+说明：每次只能向下或者向右移动一步。
+
+    int** dp;
+    dp = (int**)malloc(sizeof(int*) * gridSize);
+    for(int i = 0; i < gridSize; i++) {
+        dp[i] = (int*)malloc(sizeof(int) * (*gridColSize));
+        memset(dp[i], 0, sizeof(int) * (*gridColSize));
+    }
+    dp[0][0] = grid[0][0];
+    for(int i = 1; i < gridSize; i++) {
+        dp[i][0] = dp[i - 1][0] + grid[i][0];
+    }
+    for(int i = 1; i < *gridColSize; i++) {
+        dp[0][i] = dp[0][i - 1] + grid[0][i];
+    }
+    for(int i = 1; i < gridSize; i++) {
+        for(int j = 1; j < *gridColSize; j++) {
+            dp[i][j] = fmin(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+        }
+    }
+    return dp[gridSize - 1][*gridColSize - 1];
+
+状态转移思路及初始化与上题一致。  
+
+### 不同路径II
+>给定一个 m x n 的整数数组 grid。一个机器人初始位于 左上角（即 grid[0][0]）。机器人尝试移动到 右下角（即 grid[m - 1][n - 1]）。机器人每次只能向下或者向右移动一步。  
+网格中的障碍物和空位置分别用 1 和 0 来表示。机器人的移动路径中不能包含 任何 有障碍物的方格。  
+返回机器人能够到达右下角的不同路径数量。  
+测试用例保证答案小于等于 2 * 109。
+
+    int **dp;
+    dp = (int **)malloc(sizeof(int *) * obstacleGridSize);
+    for (int i = 0; i < obstacleGridSize; i++)
+    {
+        dp[i] = (int *)malloc(sizeof(int) * (*obstacleGridColSize));
+        memset(dp[i], 0, sizeof(int) * (*obstacleGridColSize));
+    }
+    dp[0][0] = 1;
+    if (obstacleGrid[0][0])dp[0][0] = 0;
+    for (int i = 1; i < *obstacleGridColSize; i++)
+    {
+        if (obstacleGrid[0][i] == 1)
+        {
+            dp[0][i] = 0;
+        }
+        else
+        {
+            dp[0][i] = dp[0][i - 1];
+        }
+    }
+    for (int i = 1; i < obstacleGridSize; i++)
+    {
+        if (obstacleGrid[i][0] == 1)
+        {
+            dp[i][0] = 0;
+        }
+        else
+        {
+            dp[i][0] = dp[i - 1][0];
+        }
+    }
+    for (int i = 1; i < obstacleGridSize; i++)
+    {
+        for (int j = 1; j < *obstacleGridColSize; j++)
+        {
+            if (obstacleGrid[i][j])
+                dp[i][j] = 0;
+            else
+            {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+    }
+    return dp[obstacleGridSize - 1][*obstacleGridColSize - 1];
+
+思路跟不同路径相似，唯一的区别在对边界的初始化上
+
+### To Be Continue  ###
