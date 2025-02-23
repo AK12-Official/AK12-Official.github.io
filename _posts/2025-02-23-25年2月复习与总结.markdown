@@ -1,0 +1,333 @@
+---
+layout: post
+title: "25年2月复习与总结"
+date:  2025-02-23 23:55:00 +0800
+categories: jekyll update
+---  
+
+# 假期中的内容
+-------------------------
+## LeetCode
+
+### 139.单词拆分
+>给你一个字符串 s 和一个字符串列表 wordDict 作为字典。如果可以利用字典中出现的一个或多个单词拼接出 s 则返回 true.  
+注意：不要求字典中出现的单词全部都使用，并且字典中的单词可以重复使用。
+
+**C版**
+
+    bool wordBreak(char* s, char** wordDict, int wordDictSize) {
+        int n=strlen(s);
+
+        int dp[n+1];
+        memset(dp, 0, sizeof(dp));
+
+        dp[0] = 1;
+
+        for(int i=0;i<n;i++){
+            if(dp[i]){
+                for(int j=0;j<wordDictSize;j++){
+                    int len=strlen(wordDict[j]);
+                    if(i+len<=n&&strncmp(s+i, wordDict[j],len)==0){
+                        dp[i+len] = 1;
+                    }
+                }
+            }
+        }
+
+        return dp[n];
+    }
+
+
+**JAVA**
+    class Solution {
+        public boolean wordBreak(String s, List<String> wordDict) {
+            Set<String> set = new HashSet<>(wordDict);
+            boolean[] dp = new boolean[s.length() + 1];
+            dp[0] = true;
+
+            for (int i = 1; i <= s.length(); i++) {
+                for (int j = 0; j < i; j++) {
+                    if (dp[j] && set.contains(s.substring(j, i))) {
+                        dp[i] = true;
+                        break;
+                    }
+                }
+            }
+
+            return dp[s.length()];
+        }
+    }
+
+思路算是比较简单的，用到了一些现成的方法`strncmp`和`contains`、`substring`等  
+注意加强对Java Util ：Set Map List等方法的理解使用  
+回头进一步学习Java的时候尽量注意
+
+***
+
+### 516. 最长回文子序列
+>给你一个字符串 s ，找出其中最长的回文子序列，并返回该序列的长度。  
+子序列定义为：不改变剩余字符顺序的情况下，删除某些字符或者不删除任何字符形成的一个序列。
+
+    int longestPalindromeSubseq(char* s) {
+        int n=strlen(s);
+
+        int dp[n][n];
+        memset(dp, 0, sizeof(dp));
+
+        for(int i=0;i<n;i++){
+            dp[i][i]=1;
+        }
+
+        for(int i=n-1;i>=0;i--){
+            for(int j=i+1;j<n;j++){
+                if(s[i]==s[j]){
+                    dp[i][j]=dp[i+1][j-1]+2;
+                }else{
+                    dp[i][j]=dp[i+1][j]>dp[i][j-1]?dp[i+1][j]:dp[i][j-1];
+                }
+            }
+        }
+        return dp[0][n-1];
+    }
+
+dp[i][j]代表i到j里最长回文子序列长度  
+长字符串的状态是由短字符串的状态推导出来的，所以要从短字符串开始推导  
+所以要从后往前推导  
+这么做似乎省下了之前用的int len=2;len<=n;len++的方法  
+**！！注意！！**  
+这题也可用两个字符串的最长公共子序列（LCS）长度的思路来解，str, str.reverse()  
+下面贴这个方法的Java代码
+
+    class Solution {
+        public int longestPalindromeSubseq(String s) {
+            String s1 = new StringBuilder(s).reverse().toString();
+            int n = s.length();
+            int[][] dp = new int[n + 1][n + 1];
+            for (int i = 1; i <= n; i++) {
+                for (int j = 1; j <= n; j++) {
+                    if (s.charAt(i - 1) == s1.charAt(j - 1)) {
+                        dp[i][j] = dp[i - 1][j - 1] + 1;
+                    } else {
+                        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                    }
+                }
+            }
+            return dp[n][n];
+        }
+    }
+
+### 1143.最长公共子序列
+>给定两个字符串 text1 和 text2，返回这两个字符串的最长 公共子序列 的长度。如果不存在 公共子序列 ，返回 0 。  
+一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。  
+例如，"ace" 是 "abcde" 的子序列，但 "aec" 不是 "abcde" 的子序列。
+两个字符串的 公共子序列 是这两个字符串所共同拥有的子序列。
+
+    int longestCommonSubsequence(char* text1, char* text2) {
+        int n1=strlen(text1);
+        int n2=strlen(text2);
+
+        int dp[n1+1][n2+1];
+        memset(dp,0,sizeof(dp));
+
+        for(int i=0;i<n1;i++){
+            dp[i][0]=0;
+        }
+        for(int i=0;i<n2;i++){
+            dp[0][i]=0;
+        }
+        for(int i=1;i<=n1;i++){
+            for(int j=1;j<=n2;j++){
+
+                if(text1[i-1]==text2[j-1])
+                {
+                    dp[i][j]=dp[i-1][j-1]+1;
+                }else{
+                    dp[i][j]=fmax(dp[i-1][j],dp[i][j-1]);
+                }
+            }
+        }
+
+        return dp[n1][n2];
+    }
+
+dp[i][j]表示text1[0:i]和text2[0:j]的最长公共子序列长度（text1的前i个和text2的前j个字符）  
+dp[i][j]=dp[i-1][j-1]+1 if text1[i]==text2[j]  
+dp[i][j]=max(dp[i-1][j],dp[i][j-1]) if text1[i]!=text2[j]  
+初始化dp[i][0]=0,dp[0][j]=0  
+dp[i][j] 表示 text1 的前 i 个字符和 text2 的前 j 个字符的最长公共子序列的长度。  
+返回dp[n1][n2]即可  
+注意循环的边界条件  
+状态转移方程 是基于一定条件 从前一个状态转到当前状态 我们*不关心*前一个状态是经过了怎么样的判断 是什么样的情况 只考虑*从上个状态转到当前来的动态过程*  
+这么说似乎有些抽象 具体地讲 对于
+
+    if(text1[i-1]==text2[j-1])
+    {
+        dp[i][j]=dp[i-1][j-1]+1;
+    }else{
+        dp[i][j]=fmax(dp[i-1][j],dp[i][j-1]);
+    }    
+
+这部分代码，我们不去考虑dp[i-1][j-1]里对text1[i-2] text2[j-2]判断，dp[i-1][j-1]的具体生成，因为其状态已经由先前的递推所确定  
+对于i、j不等（特别是相差很大）的情况更是不必深究 因为其状态也是由其前确定的状态得来
+
+
+### 72.编辑距离
+>给你两个单词 word1 和 word2， 请返回将 word1 转换成 word2 所使用的最少操作数  。  
+你可以对一个单词进行如下三种操作:  
+插入一个字符  
+删除一个字符  
+替换一个字符
+
+    int minDistance(char* word1, char* word2) {
+        int n1=strlen(word1);
+        int n2=strlen(word2);
+
+        int fmin(int a,int b,int c){
+            int min=a;
+            min=min<b?min:b;
+            min=min<c?min:c;
+            return min;
+        }
+
+        int dp[n1+1][n2+1];
+        memset(dp,0,sizeof(dp));
+
+        for(int i=0;i<n1+1;i++){
+            dp[i][0]=i;
+        }
+        for(int j=0;j<n2+1;j++){
+            dp[0][j]=j;
+        }
+
+        for(int i=1;i<n1+1;i++){
+            for(int j=1;j<n2+1;j++){
+                if(word1[i-1]==word2[j-1])
+                {
+                    dp[i][j]=fmin(dp[i-1][j-1]-1,dp[i-1][j],dp[i][j-1])+1;
+                }else{
+                    dp[i][j]=fmin(dp[i-1][j-1],dp[i-1][j],dp[i][j-1])+1;
+                }
+            }
+        }
+
+        return dp[n1][n2];
+    }
+
+太有说法了 这个*题目  
+直接贴题解，不多说[力扣官方题解](https://leetcode.cn/problems/edit-distance/solutions/188223/bian-ji-ju-chi-by-leetcode-solution/)**务必要看Bro**
+
+
+### 712.两个字符串的最小ASCII删除和
+>给定两个字符串s1 和 s2，返回 使两个字符串相等所需删除字符的 ASCII 值的最小和 。
+
+    int minimumDeleteSum(char* s1, char* s2) {
+        int n1=strlen(s1);
+        int n2=strlen(s2);
+
+        int dp[n1+1][n2+1];
+        memset(dp,0,sizeof(dp));
+
+        dp[0][0]=0;
+        for(int i=1;i<=n1;i++){
+            dp[i][0]=dp[i-1][0]+s1[i-1];
+        }
+        for(int i=1;i<=n2;i++){
+            dp[0][i]=dp[0][i-1]+s2[i-1];
+        }
+
+        for(int i=1;i<=n1;i++){
+            for(int j=1;j<=n2;j++){
+                if(s1[i-1]==s2[j-1]){
+                    dp[i][j]=dp[i-1][j-1];
+                }else{
+                    dp[i][j]=fmin(dp[i-1][j]+s1[i-1],dp[i][j-1]+s2[j-1]);
+                }
+            }
+        }
+
+        return dp[n1][n2];
+    }
+
+不太有什么好说的，注意边界条件  
+再强调一点前面说的 **不要**去抠dp转移的细节和顺序 只抽象的认定状态和基于状态进行下一步转移
+
+
+### 258.各位相加（Not DP）
+>给定一个非负整数 num，反复将各个位上的数字相加，直到结果为一位数。返回这个结果。
+
+    class Solution {
+        public int addDigits(int num) {
+            return (num - 1) % 9 + 1;
+        }
+    }
+
+这道是简单题，没什么好说的，但是存在O(1)的方法  
+数学 很奇妙吧 贴题解 走！[力扣官方题解](https://leetcode.cn/problems/add-digits/solutions/1301157/ge-wei-xiang-jia-by-leetcode-solution-u4kj/)  
+![题解数学思想](../src/2025-02-23-1.png "很奇妙吧，数学")
+
+### 1422.分割字符串的最大得分
+>给你一个由若干 0 和 1 组成的字符串 s ，请你计算并返回将该字符串分割成两个 非空 子字符串（即 左 子字符串和 右 子字符串）所能获得的最大得分。  
+「分割字符串的得分」为 左 子字符串中 0 的数量加上 右 子字符串中 1 的数量。
+
+    class Solution {
+        public int maxScore(String s) {
+            int maxScore = 0;
+            int leftZeros = 0;
+            int rightOnes = 0;
+
+            // 计算初始右子字符串中 1 的数量
+            for (char c : s.toCharArray()) {
+                if (c == '1') {
+                    rightOnes++;
+                }
+            }
+
+            // 遍历每一个可能的分割点
+            for (int i = 0; i < s.length() - 1; i++) {
+                if (s.charAt(i) == '0') {
+                    leftZeros++;
+                } else {
+                    rightOnes--;
+                }
+                int currentScore = leftZeros + rightOnes;
+                maxScore = Math.max(maxScore, currentScore);
+            }
+
+            return maxScore;
+        }
+    }
+
+思路还是很简单的 对每个点位分割遍历是了 不过这个**实现方法很有意思**    
+其实就是先假设分割点在第一个字符前 即 整个字符串为右子字符串  
+先保存整个字符串中1的个数  
+然后遍历字符串 假设当前字符为分割点 当前得分＝左子字符串中0的个数+右子字符串中1的个数  
+最大得分就是一个变化量 最后会停在最大值
+
+
+### 2586.统计范围内的元音字符串数
+>给你一个下标从 0 开始的字符串数组 words 和两个整数：left 和 right 。  
+如果字符串以元音字母开头并以元音字母结尾，那么该字符串就是一个 元音字符串 ，其中元音字母是 'a'、'e'、'i'、'o'、'u' 。  
+返回 words[i] 是元音字符串的数目，其中 i 在闭区间 [left, right] 内。
+
+    class Solution {
+        boolean Begin(String str){
+                return str.startsWith("a")||str.startsWith("e")||str.startsWith("i")||str.startsWith("o")||str.startsWith("u");
+            };
+            boolean End(String str){
+                return str.endsWith("a")||str.endsWith("e")||str.endsWith("i")||str.endsWith("o")||str.endsWith("u");
+            };
+        public int vowelStrings(String[] words, int left, int right) {
+            int ans=0;
+
+            for(int i=left;i<=right;i++){
+                String str=words[i];
+                if(Begin(str)&&End(str))
+                ans++;
+            }
+            return ans;
+        }
+    }
+
+这题好简单啊 我不知道当初我存这个是图什么  
+二改：我去看了题解 惊为天人 **真的很有必要进一步学习和巩固包括hash在内的数据结构了**[力扣官方题解](https://leetcode.cn/problems/count-the-number-of-vowel-strings-in-range/solutions/2515213/tong-ji-fan-wei-nei-de-yuan-yin-zi-fu-ch-dau9/)  
+![为什么要使用哈希](../src/2025-02-23-02.png)
