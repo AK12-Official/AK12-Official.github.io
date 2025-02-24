@@ -39,6 +39,8 @@ categories: jekyll update
 
 
 **JAVA**
+
+
     class Solution {
         public boolean wordBreak(String s, List<String> wordDict) {
             Set<String> set = new HashSet<>(wordDict);
@@ -263,7 +265,7 @@ dp[i][j] 表示 text1 的前 i 个字符和 text2 的前 j 个字符的最长公
 
 这道是简单题，没什么好说的，但是存在O(1)的方法  
 数学 很奇妙吧 贴题解 走！[力扣官方题解](https://leetcode.cn/problems/add-digits/solutions/1301157/ge-wei-xiang-jia-by-leetcode-solution-u4kj/)  
-![题解数学思想](../src/2025-02-23-1.png "很奇妙吧，数学")
+![题解数学思想](./src/2025-02-23-1.png "很奇妙吧，数学")
 
 ### 1422.分割字符串的最大得分
 >给你一个由若干 0 和 1 组成的字符串 s ，请你计算并返回将该字符串分割成两个 非空 子字符串（即 左 子字符串和 右 子字符串）所能获得的最大得分。  
@@ -330,4 +332,213 @@ dp[i][j] 表示 text1 的前 i 个字符和 text2 的前 j 个字符的最长公
 
 这题好简单啊 我不知道当初我存这个是图什么  
 二改：我去看了题解 惊为天人 **真的很有必要进一步学习和巩固包括hash在内的数据结构了**[力扣官方题解](https://leetcode.cn/problems/count-the-number-of-vowel-strings-in-range/solutions/2515213/tong-ji-fan-wei-nei-de-yuan-yin-zi-fu-ch-dau9/)  
-![为什么要使用哈希](../src/2025-02-23-02.png)
+![为什么要使用哈希](./src/2025-02-23-02.png)
+
+
+
+<a name="LIS1">
+
+### 300.最长的递增子序列 （LIS）
+>给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。  
+子序列 是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。例如，[3,6,2,7] 是数组 [0,3,1,6,2,2,7] 的子序列。
+
+    int lengthOfLIS(int* nums, int numsSize) {
+        if(numsSize==0)return 0;
+        if(numsSize==1)return 1;
+        int dp[numsSize]={};
+
+
+        for(int i=0;i<numsSize;i++){
+            dp[i]=1;
+            for(int j=0;j<i;j++){
+                if(nums[j]<nums[i])
+                    dp[i]=fmax(dp[i],dp[j]+1);
+            }
+
+        }
+        int ans=dp[0];
+        for(int i=1;i<numsSize;i++){
+            ans=ans>dp[i]?ans:dp[i];
+        }
+        return ans;
+    }
+
+最长上升子序列问题 思路和状态转换不是很难 pass
+
+
+<a name="LIS2">
+
+### 673.最长递增子序列的个数
+>给定一个未排序的整数数组 nums ， 返回最长递增子序列的个数 。  
+注意 这个数列必须是 严格 递增的。
+
+     int findNumberOfLIS(int *nums, int numsSize)
+    {
+        int dp[numsSize], count[numsSize];
+        for (int i = 0; i < numsSize; i++)
+        {
+            dp[i] = 1;
+            count[i] = 1;
+        }
+        int max = 1;
+        for (int i = 1; i < numsSize; i++)
+        {
+            for (int j = 0; j < i; j++)
+            {
+                if (nums[i] > nums[j])
+                {
+                    if (dp[j] + 1 > dp[i])
+                    {
+                        dp[i] = dp[j] + 1;
+                        count[i] = count[j];
+                    }
+                    else if (dp[j] + 1 == dp[i])
+                    {
+                        count[i] += count[j];
+                    }
+                }
+            }
+            max = fmax(max, dp[i]);
+        }
+        int result = 0;
+        for (int i = 0; i < numsSize; i++)
+        {
+            if (dp[i] == max)
+            {
+                result += count[i];
+            }
+        }
+        return result;
+    }
+
+
+太惦记在300题基础上用数组字典进行记录了  
+还是DP 继承了300题的思路  
+用count数组记录在i位置结尾的递增子序列个数
+  
+count[i]=count[j]   找到了更长的递增子序列 在i结尾的序列数就等于在j结尾的序列数    
+count[i]+=count[j]  找到了相同长度的递增子序列 在i结尾的序列数就等于在i结尾的序列数加上j结尾的序列数    
+这里的在i结尾的序列数其实就是在上一行的j处结尾的序列数    
+因为 line19 的if`if (dp[j] + 1 > dp[i])`一定先执行 先进行了状态转移
+
+
+以下述代码详细理解：
+
+    if (nums[i] > nums[j])
+    {
+        if (dp[j] + 1 > dp[i])
+        {
+            dp[i] = dp[j] + 1;
+            count[i] = count[j];
+        }
+        else if (dp[j] + 1 == dp[i])
+        {
+            count[i] += count[j];
+        }
+    }
+
+在状态转移过程中`dp[j] + 1 > dp[i]`这个判断一定先执行才会有`dp[j] + 1 == dp[i]`这个判断，最开始的限制条件`nums[i] > nums[j]`保证了这一点  
+对dp[i]而言 他可能由前面的多个dp[j]转移而来 而我们只取最大的一个（max(dp[j])+1） 同时由于序列增长，我们自然重置count[i]的值和count[j]相等  
+当dp[i]已经由前面最大的dp[j]完成转移后 后面的dp[j]就不可能再比dp[i]大  
+当后面剩下的多个dp[j]的值都满足dp[j]+1=dp[i]时，count[i]继续增长  
+
+总的来说 count[i]等于 dp[i]-1得到的值X(长度仅比i处结尾的子序列短1) 拿这个X遍历i前面的dp[j]， 得到多个满足X=dp[j]的j  count[i]=sun(count[j]) 
+
+
+**还有一个难度更大 时间复杂度更低的方法 记得看**  
+[力扣官方题解](https://leetcode.cn/problems/number-of-longest-increasing-subsequence/solutions/1007075/zui-chang-di-zeng-zi-xu-lie-de-ge-shu-by-w12f/)
+
+
+### 646.最长数对链
+>给你一个由 n 个数对组成的数对数组 pairs ，其中 pairs[i] = [lefti, righti] 且 lefti < righti 。  
+现在，我们定义一种 跟随 关系，当且仅当 b < c 时，数对 p2 = [c, d] 才可以跟在 p1 = [a, b] 后面。我们用这种形式来构造 数对链 。  
+找出并返回能够形成的 最长数对链的长度 。  
+你不需要用到所有的数对，你可以以任何顺序选择其中的一些数对来构造。
+
+    int compare(const void* a, const void* b) {
+        int* pairA = *(int**)a;
+        int* pairB = *(int**)b;
+        return pairA[0] - pairB[0];
+    }
+    int findLongestChain(int** pairs, int pairsSize, int* pairsColSize) {    
+        qsort(pairs, pairsSize, sizeof(int*), compare);
+        int dp[pairsSize]={0};
+        int left=0;
+        int right=1;
+
+
+
+        for(int i=0;i<pairsSize;i++){
+            dp[i]=1;
+            for(int j=0;j<i;j++){
+                if(pairs[j][right]<pairs[i][left]||)
+                    dp[i]=fmax(dp[i],dp[j]+1);
+            }
+        }
+
+        int ans=dp[0];
+        for(int i=1;i<pairsSize;i++){
+            ans=ans>dp[i]?ans:dp[i];
+        }
+        return ans;
+    }
+
+
+LIS的变式.先将数组按第一维排序，然后采取和LIS一致的遍历方法即可
+
+
+### 1218.最长定差子序列
+>给你一个整数数组 arr 和一个整数 difference，请你找出并返回 arr 中最长等差子序列的长度，该子序列中相邻元素之间的差等于 difference 。  
+子序列 是指在不改变其余元素顺序的情况下，通过删除一些元素或不删除任何元素而从 arr 派生出来的序列。
+
+
+传统的写法（**如下**）会狠狠超时
+
+    //Wrong Method
+    int longestSubsequence(int* arr, int arrSize, int difference) {
+        int dp[arrSize]={};
+
+        for(int i=0;i<arrSize;i++)
+        {
+            dp[i]=1;
+            for(int j=0;j<i;j++){
+                if(arr[j]+difference==arr[i]){
+                    dp[i]=fmax(dp[j]+1,dp[i]);
+                }
+            }
+        }
+
+        int ans=dp[0];
+        for(int i=0;i<arrSize;i++){
+            ans=ans>dp[i]?ans:dp[i];
+        }
+        return ans;
+    }
+
+
+正解：
+
+    int longestSubsequence(int* arr, int arrSize, int difference) {
+        int* dp = (int*)malloc(arrSize * sizeof(int));
+        memset(dp, 0, arrSize * sizeof(int));
+        int maxLen = 1;
+        int* hashTable = (int*)malloc(20001 * sizeof(int)); // 假设数组元素的范围是 -10000 到 10000
+        memset(hashTable, 0, 20001 * sizeof(int));
+
+        for (int i = 0; i < arrSize; i++) {
+            int prevValue = arr[i] - difference + 10000;
+            if (prevValue >= 0 && prevValue <= 20000 && hashTable[prevValue] > 0) {
+                dp[i] = hashTable[prevValue] + 1;
+            } else {
+                dp[i] = 1;
+            }
+            hashTable[arr[i] + 10000] = dp[i];
+            if (dp[i] > maxLen) {
+                maxLen = dp[i];
+            }
+        }
+        return maxLen;
+    }
+
+
+TO BE CONTINUE
