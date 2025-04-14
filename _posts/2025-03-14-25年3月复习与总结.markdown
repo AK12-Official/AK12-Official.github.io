@@ -576,3 +576,48 @@ int findKthLargest(int* nums, int numsSize, int k) {
 ```
 
 线性时间选择，不多说
+
+
+<button onclick="topFunction()" id="topBtn" title="Go to top">Top</button>
+
+<style>
+#topBtn {
+  display: none; /* 隐藏按钮 */
+  position: fixed; /* 固定位置 */
+  bottom: 20px; /* 距离底部20px */
+  right: 30px; /* 距离右侧30px */
+  z-index: 99; /* 确保按钮在最前面 */
+  border: none; /* 无边框 */
+  outline: none; /* 无轮廓 */
+  background-color: #555; /* 背景颜色 */
+  color: white; /* 字体颜色 */
+  cursor: pointer; /* 鼠标指针 */
+  padding: 15px; /* 内边距 */
+  border-radius: 10px; /* 圆角 */
+}
+
+#topBtn:hover {
+  background-color: #333; /* 鼠标悬停时的背景颜色 */
+}
+</style>
+
+<script>
+// 当用户向下滚动 20px 时，显示按钮
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    document.getElementById("topBtn").style.display = "block";
+  } else {
+    document.getElementById("topBtn").style.display = "none";
+  }
+}
+
+// 当用户点击按钮时，回到顶部
+function topFunction() {
+//   document.body.scrollTop = 0; // For Safari
+//   document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+</script>
