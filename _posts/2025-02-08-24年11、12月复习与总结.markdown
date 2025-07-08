@@ -207,13 +207,13 @@ categories: jekyll update
     
     哈希表结构定义：
     struct hashTable 定义了哈希表的结构，包含键 key 和值 val，以及用于哈希表操作的句柄 UT_hash_handle hh。
-
+    
     查找函数 find：
     find 函数用于在哈希表中查找键为 ikey 的元素。如果找到，返回该元素的指针；否则返回 NULL。
-
+    
     插入函数 insert：
     insert 函数用于向哈希表中插入键值对 (ikey, ival)。如果键 ikey 已存在，则更新其值为 ival；否则，创建一个新的哈希表元素并插入。
-
+    
     主函数 twoSum：
     twoSum 函数用于在数组 nums 中查找和为 target 的两个数的下标。
     初始化哈希表 hashtable 为 NULL。
@@ -320,21 +320,21 @@ categories: jekyll update
         if (nums1Size > nums2Size) {
             return findMedianSortedArrays(nums2, nums2Size, nums1, nums1Size);
         }
-
+    
         int x = nums1Size;
         int y = nums2Size;
         int low = 0, high = x;
-
+    
         while (low <= high) {
             int partitionX = (low + high) / 2;
             int partitionY = (x + y + 1) / 2 - partitionX;
-
+    
             int maxX = (partitionX == 0) ? INT_MIN : nums1[partitionX - 1];
             int maxY = (partitionY == 0) ? INT_MIN : nums2[partitionY - 1];
-
+    
             int minX = (partitionX == x) ? INT_MAX : nums1[partitionX];
             int minY = (partitionY == y) ? INT_MAX : nums2[partitionY];
-
+    
             if (maxX <= minY && maxY <= minX) {
                 if ((x + y) % 2 == 0) {
                     return ((double)fmax(maxX, maxY) + fmin(minX, minY)) / 2;
@@ -347,7 +347,7 @@ categories: jekyll update
                 low = partitionX + 1;
             }
         }
-
+    
         return -1; // Should never reach here
     }
 
@@ -393,13 +393,13 @@ minX 和 minY 分别是 nums1 和 nums2 分割位置右侧的最小值。
             if (x < 0 || (x % 10 == 0 && x != 0)) {
                 return false;
             }
-
+    
             int revertedNumber = 0;
             while (x > revertedNumber) {
                 revertedNumber = revertedNumber * 10 + x % 10;
                 x /= 10;
             }
-
+    
             // 当数字长度为奇数时，我们可以通过 revertedNumber/10 去除处于中位的数字。
             // 例如，当输入为 12321 时，在 while 循环的末尾我们可以得到 x = 12，revertedNumber = 123，
             // 由于处于中位的数字不影响回文（它总是与自己相等），所以我们可以简单地将其去除。
@@ -419,12 +419,12 @@ minX 和 minY 分别是 nums1 和 nums2 分割位置右侧的最小值。
             if (c % 10 == c / 10 % 10) continue;
             if (c / 10 % 10 == c / 100) continue;
             if (c % 10 == c / 100) continue;
-
+    
             int a = 2 * i;
             int b = 3 * i;
             int d[10] = {0};
             int temp = c;
-
+    
             for (int j = 0; j < 3; j++) {
                 d[temp % 10]++;
                 temp /= 10;
@@ -439,7 +439,7 @@ minX 和 minY 分别是 nums1 和 nums2 分割位置右侧的最小值。
                 d[temp % 10]++;
                 temp /= 10;
             }
-
+    
             int mark = 1;
             for (int j = 1; j < 10; j++) {
                 if (d[j] == 0)
@@ -448,7 +448,7 @@ minX 和 minY 分别是 nums1 和 nums2 分割位置右侧的最小值。
             if (mark)
                 printf("%d %d %d\n", i, a, b);
         }
-
+    
         return 0;
     }
 
